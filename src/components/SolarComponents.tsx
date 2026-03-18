@@ -13,7 +13,7 @@ export function Navbar() {
             <div className="bg-solar-yellow p-2 rounded-lg">
               <Sun className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-display font-bold tracking-tight">ISOLLAR ENERGY</span>
+            <span className="text-2xl font-display font-bold tracking-tight">Isollar Energy Engenharia</span>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
@@ -267,7 +267,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-bold">E-mail</p>
-                  <p className="text-gray-500">contato@isollarenergy.com.br</p>
+                  <p className="text-gray-500">isollarenergyengenharia@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -276,7 +276,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-bold">Telefone</p>
-                  <p className="text-gray-500">(11) 99999-9999</p>
+                  <p className="text-gray-500">(98) 99151-6381</p>
                 </div>
               </div>
             </div>
@@ -348,7 +348,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:row justify-between items-center gap-4">
-          <p className="text-gray-500 text-xs">© 2026 Isollar Energy Engenharia. Todos os direitos reservados.</p>
+          <p className="text-gray-500 text-xs">© 2022 Isollar Energy Engenharia. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             {/* Social icons could go here */}
           </div>
