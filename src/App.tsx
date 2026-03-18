@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Navbar, Hero, Features, Calculator, Contact, Footer, ChatWidget } from './components/SolarComponents';
+import { Navbar, Hero, Features, Calculator, Contact, Footer, ChatWidget, SalesTeam, Process, ProjectGallery, Testimonials, FAQ } from './components/SolarComponents';
 import { motion } from 'motion/react';
 
 export default function App() {
@@ -22,9 +22,13 @@ export default function App() {
           <Features />
         </motion.div>
 
+        <Process />
+
         <Calculator />
 
-        <section id="beneficios" className="py-24 overflow-hidden">
+        <ProjectGallery />
+
+        <section id="beneficios" className="py-24 overflow-hidden bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="order-2 lg:order-1">
@@ -67,6 +71,12 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        <SalesTeam />
+        
+        <Testimonials />
+
+        <FAQ />
 
         <Contact />
       </main>
