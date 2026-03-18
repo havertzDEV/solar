@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Navbar, Hero, Features, Calculator, Contact, Footer } from './components/SolarComponents';
+import { Navbar, Hero, Features, Calculator, Contact, Footer, ChatWidget } from './components/SolarComponents';
 import { motion } from 'motion/react';
 
 export default function App() {
@@ -71,6 +71,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

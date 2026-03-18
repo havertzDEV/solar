@@ -1,6 +1,7 @@
-import { Sun, Battery, Zap, Shield, ChevronRight, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Sun, Battery, Zap, Shield, ChevronRight, Menu, X, MessageCircle, Send, User, Bot } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { GoogleGenAI } from "@google/genai";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -355,5 +356,155 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+export function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: 'user' | 'bot', text: string }[]>([
+    { role: 'bot', text: 'Olá! Sou o consultor virtual da Isollar Energy Engenharia. Como posso ajudar você hoje?' }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+    setIsLoading(true);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+      const model = ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: messages.concat({ role: 'user', text: userMessage }).map(m => ({
+          role: m.role === 'user' ? 'user' : 'model',
+          parts: [{ text: m.text }]
+        })),
+        config: {
+          systemInstruction: "Você é um consultor especializado da Isollar Energy Engenharia, uma empresa de energia solar. Seu objetivo é tirar dúvidas de clientes sobre energia fotovoltaica, economia, instalação e benefícios. Seja profissional, prestativo e educado. Se o cliente quiser um orçamento real ou falar com um humano, sugira o WhatsApp (98) 99151-6381. Mantenha as respostas concisas e em português do Brasil.",
+        }
+      });
+
+      const response = await model;
+      const botResponse = response.text || "Desculpe, tive um problema ao processar sua pergunta. Pode tentar novamente?";
+      
+      setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
+    } catch (error) {
+      console.error("Chat error:", error);
+      setMessages(prev => [...prev, { role: 'bot', text: "No momento estou offline. Por favor, entre em contato pelo WhatsApp (98) 99151-6381 para falar com um consultor humano." }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[100]">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="bg-white w-[350px] h-[500px] rounded-[32px] shadow-2xl border border-black/5 flex flex-col overflow-hidden mb-4"
+          >
+            {/* Header */}
+            <div className="bg-solar-dark p-6 text-white flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="bg-solar-yellow p-2 rounded-lg">
+                  <Sun className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm">Consultor Isollar</p>
+                  <p className="text-[10px] text-solar-yellow flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-solar-yellow rounded-full animate-pulse" />
+                    Online agora
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-1 rounded-lg transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-solar-yellow text-white rounded-tr-none' 
+                      : 'bg-white text-solar-dark border border-black/5 rounded-tl-none shadow-sm'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-black/5 shadow-sm">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" />
+                      <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="p-4 bg-white border-t border-black/5">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Digite sua dúvida..."
+                  className="w-full pl-4 pr-12 py-3 bg-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all"
+                />
+                <button 
+                  onClick={handleSend}
+                  disabled={isLoading || !input.trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-solar-yellow hover:bg-solar-yellow/10 rounded-lg transition-all disabled:opacity-50"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-[10px] text-center text-gray-400 mt-3">
+                Prefere falar no WhatsApp? <a href="https://wa.me/5598991516381" target="_blank" className="text-solar-yellow font-bold">Clique aqui</a>
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-solar-yellow text-white p-4 rounded-full shadow-2xl shadow-solar-yellow/30 flex items-center justify-center relative group"
+      >
+        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        {!isOpen && (
+          <span className="absolute right-full mr-4 bg-solar-dark text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Fale com um consultor
+          </span>
+        )}
+      </motion.button>
+    </div>
   );
 }
