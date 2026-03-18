@@ -13,7 +13,7 @@ export function Navbar() {
             <div className="bg-solar-yellow p-2 rounded-lg">
               <Sun className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-display font-bold tracking-tight">SOLARA</span>
+            <span className="text-2xl font-display font-bold tracking-tight">ISOLLAR</span>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
@@ -164,7 +164,7 @@ export function Features() {
     <section id="servicos" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl font-display font-bold mb-6">Por que escolher a Solara?</h2>
+          <h2 className="text-4xl font-display font-bold mb-6">Por que escolher a Isollar?</h2>
           <p className="text-gray-600">Oferecemos soluções completas, desde o projeto inicial até a manutenção preventiva do seu sistema solar.</p>
         </div>
         
@@ -276,7 +276,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-bold">Telefone</p>
-                  <p className="text-gray-500">(11) 99999-9999</p>
+                  <p className="text-gray-500">(98) 99151-6381</p>
                 </div>
               </div>
             </div>
@@ -323,7 +323,7 @@ export function Footer() {
               <div className="bg-solar-yellow p-2 rounded-lg">
                 <Sun className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-display font-bold tracking-tight">SOLARA</span>
+              <span className="text-2xl font-display font-bold tracking-tight">ISOLLAR</span>
             </div>
             <p className="text-gray-400 max-w-sm">
               Líder em soluções fotovoltaicas, ajudando milhares de famílias e empresas a conquistarem sua independência energética.
@@ -348,7 +348,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:row justify-between items-center gap-4">
-          <p className="text-gray-500 text-xs">© 2026 Solara Energia Solar. Todos os direitos reservados.</p>
+          <p className="text-gray-500 text-xs">© 2022 Isollar Energy Engenharia. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             {/* Social icons could go here */}
           </div>
