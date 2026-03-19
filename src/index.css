@@ -12,6 +12,12 @@
   --color-solar-dark: #0F172A;
   --color-solar-gray: #64748B;
   --color-solar-light: #F8FAFC;
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  --animate-spin-slow: spin-slow 12s linear infinite;
 }
 
 @layer base {

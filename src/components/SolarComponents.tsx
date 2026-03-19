@@ -1,7 +1,26 @@
 import { Sun, Battery, Zap, Shield, ChevronRight, Menu, X, MessageCircle, Send, User, Bot, Phone, Calendar, ArrowRight, Star, CheckCircle2, Users, Play, Quote, HelpCircle, MapPin, Award, TrendingUp, Clock } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
+
+export function Logo({ className = "h-12", light = false }: { className?: string, light?: boolean }) {
+  return (
+    <div className={`flex items-center gap-2 ${className}`}>
+      <div className="relative flex items-center justify-center">
+        <Sun className={`w-8 h-8 ${light ? 'text-white' : 'text-solar-yellow'} animate-spin-slow`} />
+        <Zap className={`w-4 h-4 absolute ${light ? 'text-solar-dark' : 'text-white'} translate-y-0.5`} />
+      </div>
+      <div className="flex flex-col leading-none">
+        <span className={`text-xl font-display font-bold tracking-tighter ${light ? 'text-white' : 'text-solar-dark'}`}>
+          ISOLLAR
+        </span>
+        <span className={`text-[10px] font-bold tracking-[0.2em] ${light ? 'text-white/60' : 'text-solar-yellow'}`}>
+          ENERGY
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,23 +33,32 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed w-full z-[100] transition-all duration-300 ${
-      scrolled ? 'py-4' : 'py-6'
-    }`}>
+    <motion.nav 
+      initial={false}
+      animate={{
+        paddingTop: scrolled ? "1rem" : "1.5rem",
+        paddingBottom: scrolled ? "1rem" : "1.5rem",
+      }}
+      className="fixed w-full z-[100] transition-colors duration-500"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`glass rounded-full px-6 flex justify-between h-16 items-center shadow-lg shadow-black/5`}>
+        <motion.div 
+          animate={{
+            backgroundColor: scrolled ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.7)",
+            backdropFilter: scrolled ? "blur(24px)" : "blur(16px)",
+            borderColor: scrolled ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.2)",
+          }}
+          className="rounded-full px-6 flex justify-between h-16 items-center shadow-lg shadow-black/5 border transition-all duration-500"
+        >
           <div className="flex items-center gap-2">
-            <div className="bg-solar-yellow p-1.5 rounded-lg shadow-inner">
-              <Sun className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-display font-bold tracking-tight">Isollar Energy Engenharia</span>
+            <Logo className="h-12" light={scrolled} />
           </div>
           
           <div className="hidden md:flex items-center gap-8">
-            <a href="#inicio" className="text-sm font-medium hover:text-solar-yellow transition-colors">Início</a>
-            <a href="#servicos" className="text-sm font-medium hover:text-solar-yellow transition-colors">Serviços</a>
-            <a href="#calculadora" className="text-sm font-medium hover:text-solar-yellow transition-colors">Economia</a>
-            <a href="#equipe" className="text-sm font-medium hover:text-solar-yellow transition-colors">Equipe</a>
+            <a href="#inicio" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Início</a>
+            <a href="#servicos" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Serviços</a>
+            <a href="#calculadora" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Economia</a>
+            <a href="#equipe" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Equipe</a>
             <div className="flex items-center gap-3">
               <a 
                 href="https://wa.me/5598991516381" 
@@ -39,18 +67,18 @@ export function Navbar() {
               >
                 <Phone className="w-4 h-4" /> (98) 99151-6381
               </a>
-              <button className="bg-solar-dark text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-solar-blue transition-all">
+              <button className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-solar-yellow text-solar-dark hover:bg-white' : 'bg-solar-dark text-white hover:bg-solar-blue'}`}>
                 Orçamento Grátis
               </button>
             </div>
           </div>
 
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-solar-dark">
+            <button onClick={() => setIsOpen(!isOpen)} className={`p-2 transition-colors ${scrolled ? 'text-white' : 'text-solar-dark'}`}>
               {isOpen ? <X /> : <Menu />}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <AnimatePresence>
@@ -59,20 +87,22 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden mx-4 mt-4 glass rounded-3xl p-6 flex flex-col gap-4 shadow-2xl"
+            className={`md:hidden mx-4 mt-4 rounded-3xl p-6 flex flex-col gap-4 shadow-2xl border ${
+              scrolled ? 'bg-solar-dark/95 backdrop-blur-2xl border-white/10 text-white' : 'glass text-solar-dark'
+            }`}
           >
             <a href="#inicio" onClick={() => setIsOpen(false)} className="text-lg font-medium">Início</a>
             <a href="#servicos" onClick={() => setIsOpen(false)} className="text-lg font-medium">Serviços</a>
             <a href="#calculadora" onClick={() => setIsOpen(false)} className="text-lg font-medium">Economia</a>
             <a href="#equipe" onClick={() => setIsOpen(false)} className="text-lg font-medium">Equipe</a>
-            <hr className="border-black/5" />
+            <hr className={scrolled ? "border-white/10" : "border-black/5"} />
             <a href="https://wa.me/5598991516381" className="bg-green-500 text-white w-full py-3 rounded-xl font-bold flex justify-center items-center gap-2">
               <Phone className="w-5 h-5" /> Falar no WhatsApp
             </a>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 }
 
@@ -220,7 +250,13 @@ export function Features() {
   return (
     <section id="servicos" className="py-32 bg-solar-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-8"
+        >
           <div className="max-w-2xl">
             <span className="text-solar-yellow font-bold text-sm uppercase tracking-widest mb-4 block">Nossos Diferenciais</span>
             <h2 className="text-5xl font-display font-bold text-solar-dark">Por que a Isollar Energy é a escolha certa?</h2>
@@ -228,12 +264,16 @@ export function Features() {
           <p className="text-lg text-solar-gray max-w-sm font-light">
             Combinamos excelência técnica com o melhor atendimento do mercado para entregar resultados reais.
           </p>
-        </div>
+        </motion.div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <motion.div
               key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
               whileHover={{ y: -10, backgroundColor: "#0F172A", color: "#FFFFFF" }}
               className="bg-white p-10 rounded-[40px] border border-black/5 shadow-sm transition-all duration-500 group"
             >
@@ -349,10 +389,16 @@ export function Process() {
   return (
     <section className="py-32 bg-solar-dark text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
           <h2 className="text-5xl font-display font-bold mb-6">Como funciona a jornada?</h2>
           <p className="text-white/60 text-xl font-light">Do primeiro contato à economia real, cuidamos de tudo.</p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-4 gap-8 relative">
           {/* Connector Line */}
@@ -361,10 +407,10 @@ export function Process() {
           {steps.map((step, i) => (
             <motion.div 
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.15, duration: 0.6 }}
               className="relative z-10 text-center"
             >
               <div className="w-24 h-24 rounded-full bg-solar-yellow/10 border border-solar-yellow/20 flex items-center justify-center mx-auto mb-8 group hover:bg-solar-yellow transition-all duration-500">
@@ -407,7 +453,13 @@ export function ProjectGallery() {
   return (
     <section className="py-32 bg-solar-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-end mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-between items-end mb-20"
+        >
           <div>
             <h2 className="text-5xl font-display font-bold mb-6">Projetos Entregues</h2>
             <p className="text-solar-gray text-xl font-light">Engenharia de precisão em todo o estado.</p>
@@ -415,12 +467,16 @@ export function ProjectGallery() {
           <button className="hidden md:flex items-center gap-2 text-solar-dark font-bold hover:text-solar-yellow transition-colors">
             Ver Portfólio Completo <ArrowRight className="w-5 h-5" />
           </button>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {projects.map((project, i) => (
             <motion.div 
               key={i}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
               whileHover={{ y: -10 }}
               className="group relative rounded-[40px] overflow-hidden shadow-2xl aspect-[4/5]"
             >
@@ -640,6 +696,74 @@ export function Calculator() {
 }
 
 export function Contact() {
+  const [formData, setFormData] = useState({
+    nome: '',
+    whatsapp: '',
+    email: '',
+    mensagem: ''
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const validate = (name: string, value: string) => {
+    let error = '';
+    if (!value.trim()) {
+      error = 'Este campo é obrigatório';
+    } else if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      error = 'E-mail inválido';
+    } else if (name === 'whatsapp' && value.replace(/\D/g, '').length < 10) {
+      error = 'WhatsApp inválido';
+    }
+    return error;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (touched[name]) {
+      const error = validate(name, value);
+      setErrors(prev => ({ ...prev, [name]: error }));
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const error = validate(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const newErrors: Record<string, string> = {};
+    Object.keys(formData).forEach(key => {
+      const error = validate(key, formData[key as keyof typeof formData]);
+      if (error) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      return;
+    }
+
+    setIsSubmitting(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    setFormData({ nome: '', whatsapp: '', email: '', mensagem: '' });
+    setTouched({});
+    
+    setTimeout(() => setIsSuccess(false), 5000);
+  };
+
   return (
     <section id="contato" className="py-32 bg-solar-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -671,15 +795,95 @@ export function Contact() {
               </div>
             </div>
             
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <input type="text" placeholder="Nome" className="w-full px-6 py-4 rounded-2xl bg-white border border-black/5 outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all" />
-                <input type="text" placeholder="WhatsApp" className="w-full px-6 py-4 rounded-2xl bg-white border border-black/5 outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all" />
+                <div className="space-y-1">
+                  <input 
+                    type="text" 
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Nome *" 
+                    className={`w-full px-6 py-4 rounded-2xl bg-white border outline-none focus:ring-2 transition-all ${
+                      touched.nome && errors.nome 
+                        ? 'border-red-500 focus:ring-red-500/20' 
+                        : 'border-black/5 focus:ring-solar-yellow/20'
+                    }`} 
+                  />
+                  {touched.nome && errors.nome && <p className="text-red-500 text-sm ml-2">{errors.nome}</p>}
+                </div>
+                <div className="space-y-1">
+                  <input 
+                    type="text" 
+                    name="whatsapp"
+                    value={formData.whatsapp}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="WhatsApp *" 
+                    className={`w-full px-6 py-4 rounded-2xl bg-white border outline-none focus:ring-2 transition-all ${
+                      touched.whatsapp && errors.whatsapp 
+                        ? 'border-red-500 focus:ring-red-500/20' 
+                        : 'border-black/5 focus:ring-solar-yellow/20'
+                    }`} 
+                  />
+                  {touched.whatsapp && errors.whatsapp && <p className="text-red-500 text-sm ml-2">{errors.whatsapp}</p>}
+                </div>
               </div>
-              <input type="email" placeholder="E-mail" className="w-full px-6 py-4 rounded-2xl bg-white border border-black/5 outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all" />
-              <textarea placeholder="Como podemos ajudar?" className="w-full px-6 py-4 rounded-2xl bg-white border border-black/5 outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all h-40"></textarea>
-              <button className="w-full bg-solar-dark text-white py-5 rounded-2xl font-bold text-lg hover:bg-solar-blue transition-all shadow-xl">
-                Enviar Mensagem
+              <div className="space-y-1">
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="E-mail *" 
+                  className={`w-full px-6 py-4 rounded-2xl bg-white border outline-none focus:ring-2 transition-all ${
+                    touched.email && errors.email 
+                      ? 'border-red-500 focus:ring-red-500/20' 
+                      : 'border-black/5 focus:ring-solar-yellow/20'
+                  }`} 
+                />
+                {touched.email && errors.email && <p className="text-red-500 text-sm ml-2">{errors.email}</p>}
+              </div>
+              <div className="space-y-1">
+                <textarea 
+                  name="mensagem"
+                  value={formData.mensagem}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Como podemos ajudar? *" 
+                  className={`w-full px-6 py-4 rounded-2xl bg-white border outline-none focus:ring-2 transition-all h-40 ${
+                    touched.mensagem && errors.mensagem 
+                      ? 'border-red-500 focus:ring-red-500/20' 
+                      : 'border-black/5 focus:ring-solar-yellow/20'
+                  }`}
+                ></textarea>
+                {touched.mensagem && errors.mensagem && <p className="text-red-500 text-sm ml-2">{errors.mensagem}</p>}
+              </div>
+              
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-xl flex items-center justify-center gap-2 ${
+                  isSuccess 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-solar-dark text-white hover:bg-solar-blue'
+                } ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Enviando...
+                  </>
+                ) : isSuccess ? (
+                  <>
+                    <CheckCircle2 className="w-6 h-6" />
+                    Mensagem Enviada!
+                  </>
+                ) : (
+                  'Enviar Mensagem'
+                )}
               </button>
             </form>
           </div>
@@ -698,10 +902,7 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-16 mb-20">
           <div className="col-span-2">
             <div className="flex items-center gap-3 mb-8">
-              <div className="bg-solar-yellow p-2 rounded-xl">
-                <Sun className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-display font-bold tracking-tight">ISOLLAR ENERGY</span>
+              <Logo className="h-16" light={true} />
             </div>
             <p className="text-xl text-white/40 max-w-md font-light leading-relaxed">
               Transformando a luz do sol em liberdade financeira para famílias e empresas maranhenses desde 2022.
