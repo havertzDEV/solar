@@ -1,7 +1,8 @@
-import { Sun, Battery, Zap, Shield, ChevronRight, Menu, X, MessageCircle, Send, User, Bot, Phone, Calendar, ArrowRight, Star, CheckCircle2, Users, Play, Quote, HelpCircle, MapPin, Award, TrendingUp, Clock } from 'lucide-react';
-import React, { useState, useRef, useEffect } from 'react';
+import { Sun, Battery, Zap, Shield, ChevronRight, Menu, X, MessageCircle, Send, User, Bot, Phone, Calendar, ArrowRight, Star, CheckCircle2, Users, Play, Quote, HelpCircle, MapPin, Award, TrendingUp, Clock, Home, Cpu, Layers, ArrowRightLeft, CloudSun, Calculator as CalcIcon, Info, DollarSign, BarChart3 } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 export function Logo({ className = "h-12", light = false }: { className?: string, light?: boolean }) {
   return (
@@ -19,6 +20,404 @@ export function Logo({ className = "h-12", light = false }: { className?: string
         </span>
       </div>
     </div>
+  );
+}
+
+export function SolarDiagram() {
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+
+  const steps = [
+    {
+      id: 1,
+      title: "Captação Solar",
+      description: "Os painéis fotovoltaicos captam a luz do sol e a transformam em energia elétrica de corrente contínua (CC).",
+      icon: <Layers className="w-8 h-8" />,
+      position: "top-0 left-0",
+      color: "bg-solar-yellow"
+    },
+    {
+      id: 2,
+      title: "Inversão de Corrente",
+      description: "O inversor solar converte a corrente contínua (CC) em corrente alternada (CA), que é a energia usada na sua casa.",
+      icon: <Cpu className="w-8 h-8" />,
+      position: "top-1/2 left-1/3",
+      color: "bg-solar-blue"
+    },
+    {
+      id: 3,
+      title: "Distribuição",
+      description: "A energia passa pelo quadro elétrico e é distribuída para todas as luzes e aparelhos da sua residência.",
+      icon: <Home className="w-8 h-8" />,
+      position: "top-1/2 left-2/3",
+      color: "bg-solar-dark"
+    },
+    {
+      id: 4,
+      title: "Créditos de Energia",
+      description: "O excesso de energia produzida é enviado para a rede elétrica, gerando créditos que você usa à noite.",
+      icon: <ArrowRightLeft className="w-8 h-8" />,
+      position: "top-0 right-0",
+      color: "bg-green-500"
+    }
+  ];
+
+  return (
+    <section className="py-32 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-20">
+          <span className="text-solar-yellow font-bold text-sm uppercase tracking-widest mb-4 block">Tecnologia</span>
+          <h2 className="text-5xl font-display font-bold text-solar-dark mb-6">Como funciona o sistema?</h2>
+          <p className="text-xl text-solar-gray font-light max-w-2xl mx-auto">
+            Uma jornada simples da luz do sol até a economia na sua conta de luz.
+          </p>
+        </div>
+
+        <div className="relative h-[600px] lg:h-[500px] w-full max-w-5xl mx-auto">
+          {/* Background Connections */}
+          <svg className="absolute inset-0 w-full h-full -z-10 opacity-10" viewBox="0 0 1000 500">
+            <path d="M100 100 L333 250 L666 250 L900 100" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="8 8" />
+          </svg>
+
+          {/* Energy Particles Animation */}
+          <div className="absolute inset-0 -z-10 pointer-events-none">
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 bg-solar-yellow rounded-full blur-[2px]"
+                animate={{
+                  x: [100, 333, 666, 900],
+                  y: [100, 250, 250, 100],
+                  opacity: [0, 1, 1, 0]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 0.8,
+                  ease: "linear"
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Sun (Visual Element) */}
+          <motion.div 
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 bg-solar-yellow/20 rounded-full blur-3xl"
+          />
+
+          {/* Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 h-full">
+            {steps.map((step, index) => (
+              <motion.div
+                key={step.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                onMouseEnter={() => setActiveStep(index)}
+                onMouseLeave={() => setActiveStep(null)}
+                className={`relative group cursor-pointer p-8 rounded-[40px] border transition-all duration-500 h-fit ${
+                  activeStep === index 
+                    ? 'bg-solar-dark border-solar-dark shadow-2xl scale-105' 
+                    : 'bg-white border-black/5 shadow-sm'
+                }`}
+              >
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform duration-500 group-hover:rotate-12 ${
+                  activeStep === index ? 'bg-solar-yellow text-solar-dark' : `${step.color} text-white`
+                }`}>
+                  {step.icon}
+                </div>
+                
+                <div className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-solar-dark text-white flex items-center justify-center font-bold text-sm border-4 border-white">
+                  0{step.id}
+                </div>
+
+                <h3 className={`text-2xl font-bold mb-4 transition-colors ${
+                  activeStep === index ? 'text-white' : 'text-solar-dark'
+                }`}>
+                  {step.title}
+                </h3>
+                
+                <p className={`text-sm leading-relaxed transition-colors ${
+                  activeStep === index ? 'text-white/70' : 'text-solar-gray'
+                }`}>
+                  {step.description}
+                </p>
+
+                {activeStep === index && (
+                  <motion.div 
+                    layoutId="glow"
+                    className="absolute inset-0 bg-solar-yellow/5 rounded-[40px] -z-10 blur-xl"
+                  />
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-20 glass p-10 rounded-[40px] border border-black/5 flex flex-col lg:flex-row items-center gap-10">
+          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <CloudSun className="w-10 h-10 text-green-600" />
+          </div>
+          <div>
+            <h4 className="text-2xl font-bold mb-2">Energia Limpa e Inesgotável</h4>
+            <p className="text-solar-gray font-light">
+              Diferente dos combustíveis fósseis, o sol é uma fonte de energia gratuita que não emite CO2. 
+              Ao instalar um sistema Isollar, você evita a emissão de toneladas de gases poluentes todos os anos.
+            </p>
+          </div>
+          <button className="bg-solar-dark text-white px-8 py-4 rounded-2xl font-bold whitespace-nowrap hover:bg-solar-blue transition-all">
+            Ver Estudo de Caso
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function ROICalculator() {
+  const regions = [
+    { name: "Maranhão (MA)", rate: 0.75, icms: 0.20, tusd: 0.05 },
+    { name: "São Paulo (SP)", rate: 0.70, icms: 0.18, tusd: 0.04 },
+    { name: "Minas Gerais (MG)", rate: 0.85, icms: 0.18, tusd: 0.06 },
+    { name: "Rio Grande do Sul (RS)", rate: 0.72, icms: 0.17, tusd: 0.04 },
+    { name: "Bahia (BA)", rate: 0.78, icms: 0.18, tusd: 0.05 },
+    { name: "Ceará (CE)", rate: 0.76, icms: 0.18, tusd: 0.05 },
+    { name: "Paraná (PR)", rate: 0.68, icms: 0.18, tusd: 0.04 },
+  ];
+
+  const [selectedRegion, setSelectedRegion] = useState(regions[0]);
+  const [consumption, setConsumption] = useState(500); // kWh/mês
+  const [investment, setInvestment] = useState(15000); // R$
+
+  const calculations = useMemo(() => {
+    const totalRate = selectedRegion.rate * (1 + selectedRegion.icms) + selectedRegion.tusd;
+    const monthlySavings = consumption * totalRate;
+    const yearlySavings = monthlySavings * 12;
+    const paybackMonths = investment / monthlySavings;
+    const paybackYears = paybackMonths / 12;
+    const savings25Years = yearlySavings * 25;
+    const roiTotal = ((savings25Years - investment) / investment) * 100;
+
+    const chartData = Array.from({ length: 26 }, (_, i) => {
+      const year = i;
+      const cumulativeSavings = yearlySavings * year;
+      const balance = cumulativeSavings - investment;
+      return {
+        year,
+        balance: Math.round(balance),
+        savings: Math.round(cumulativeSavings),
+        investment: investment
+      };
+    });
+
+    return {
+      monthlySavings,
+      yearlySavings,
+      paybackYears,
+      savings25Years,
+      roiTotal,
+      chartData,
+      totalRate
+    };
+  }, [selectedRegion, consumption, investment]);
+
+  return (
+    <section id="roi" className="py-32 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-16">
+          {/* Controls */}
+          <div className="lg:w-1/3 space-y-10">
+            <div>
+              <span className="text-solar-yellow font-bold text-sm uppercase tracking-widest mb-4 block">Calculadora de ROI</span>
+              <h2 className="text-4xl font-display font-bold text-solar-dark mb-6">Simule seu Retorno Financeiro</h2>
+              <p className="text-solar-gray font-light">
+                Descubra em quanto tempo seu sistema se paga e quanto você vai economizar em 25 anos de vida útil.
+              </p>
+            </div>
+
+            <div className="space-y-8 bg-solar-light p-8 rounded-[40px] border border-black/5">
+              <div className="space-y-4">
+                <label className="block text-sm font-bold text-solar-dark uppercase tracking-wider">Região / Estado</label>
+                <select 
+                  value={selectedRegion.name}
+                  onChange={(e) => setSelectedRegion(regions.find(r => r.name === e.target.value) || regions[0])}
+                  className="w-full px-6 py-4 rounded-2xl bg-white border border-black/5 outline-none focus:ring-2 focus:ring-solar-yellow/20 transition-all font-medium"
+                >
+                  {regions.map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                </select>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <label className="block text-sm font-bold text-solar-dark uppercase tracking-wider">Consumo Mensal</label>
+                  <span className="text-xl font-display font-bold text-solar-yellow">{consumption} kWh</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="100" 
+                  max="5000" 
+                  step="50"
+                  value={consumption}
+                  onChange={(e) => setConsumption(Number(e.target.value))}
+                  className="w-full h-2 bg-solar-dark/10 rounded-full appearance-none cursor-pointer accent-solar-yellow"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <label className="block text-sm font-bold text-solar-dark uppercase tracking-wider">Investimento Estimado</label>
+                  <span className="text-xl font-display font-bold text-solar-yellow">R$ {investment.toLocaleString()}</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="5000" 
+                  max="100000" 
+                  step="1000"
+                  value={investment}
+                  onChange={(e) => setInvestment(Number(e.target.value))}
+                  className="w-full h-2 bg-solar-dark/10 rounded-full appearance-none cursor-pointer accent-solar-yellow"
+                />
+              </div>
+
+              <div className="pt-6 border-t border-black/5">
+                <div className="flex items-center gap-3 text-solar-gray text-xs">
+                  <Info className="w-4 h-4 text-solar-yellow" />
+                  <p>Valores baseados em tarifas médias regionais (kWh + ICMS + TUSD).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="lg:w-2/3 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <motion.div 
+                key={calculations.paybackYears}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-solar-dark p-8 rounded-[40px] text-white"
+              >
+                <div className="w-10 h-10 bg-solar-yellow/20 rounded-xl flex items-center justify-center mb-6">
+                  <Clock className="w-6 h-6 text-solar-yellow" />
+                </div>
+                <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Payback Estimado</p>
+                <p className="text-3xl font-display font-bold text-solar-yellow">
+                  {calculations.paybackYears.toFixed(1)} <span className="text-sm font-sans font-light text-white/60">Anos</span>
+                </p>
+              </motion.div>
+
+              <motion.div 
+                key={calculations.monthlySavings}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-solar-light p-8 rounded-[40px] border border-black/5"
+              >
+                <div className="w-10 h-10 bg-solar-dark/5 rounded-xl flex items-center justify-center mb-6">
+                  <DollarSign className="w-6 h-6 text-solar-dark" />
+                </div>
+                <p className="text-xs text-solar-gray uppercase tracking-widest mb-2">Economia Mensal</p>
+                <p className="text-3xl font-display font-bold text-solar-dark">
+                  R$ {Math.round(calculations.monthlySavings).toLocaleString()}
+                </p>
+              </motion.div>
+
+              <motion.div 
+                key={calculations.roiTotal}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-solar-light p-8 rounded-[40px] border border-black/5"
+              >
+                <div className="w-10 h-10 bg-solar-dark/5 rounded-xl flex items-center justify-center mb-6">
+                  <BarChart3 className="w-6 h-6 text-solar-dark" />
+                </div>
+                <p className="text-xs text-solar-gray uppercase tracking-widest mb-2">ROI em 25 Anos</p>
+                <p className="text-3xl font-display font-bold text-solar-dark">
+                  {Math.round(calculations.roiTotal)}%
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Chart */}
+            <div className="bg-solar-light p-10 rounded-[40px] border border-black/5 h-[400px]">
+              <div className="flex justify-between items-center mb-10">
+                <h3 className="text-xl font-bold">Projeção de Equilíbrio Financeiro</h3>
+                <div className="flex gap-6 text-xs font-bold uppercase tracking-widest">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-solar-yellow rounded-full" />
+                    <span>Saldo Acumulado</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-solar-dark/20 rounded-full" />
+                    <span>Investimento</span>
+                  </div>
+                </div>
+              </div>
+              
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={calculations.chartData}>
+                  <defs>
+                    <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FACC15" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#FACC15" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="year" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fill: '#6B7280', fontSize: 12}}
+                    label={{ value: 'Anos', position: 'insideBottom', offset: -5, fontSize: 10, fontWeight: 'bold' }}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fill: '#6B7280', fontSize: 12}}
+                    tickFormatter={(value) => `R$ ${value/1000}k`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '15px' }}
+                    formatter={(value: number) => [`R$ ${value.toLocaleString()}`, 'Saldo']}
+                    labelFormatter={(label) => `Ano ${label}`}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="balance" 
+                    stroke="#FACC15" 
+                    strokeWidth={4}
+                    fillOpacity={1} 
+                    fill="url(#colorBalance)" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="investment" 
+                    stroke="#0F172A" 
+                    strokeWidth={2} 
+                    strokeDasharray="5 5" 
+                    dot={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="glass p-8 rounded-[40px] border border-black/5 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-bold mb-1">Total Economizado em 25 Anos</p>
+                <p className="text-solar-gray font-light">Considerando a vida útil média dos painéis.</p>
+              </div>
+              <div className="text-right">
+                <p className="text-4xl font-display font-bold text-green-600">R$ {Math.round(calculations.savings25Years).toLocaleString()}</p>
+                <p className="text-xs font-bold text-solar-dark uppercase tracking-widest mt-2">Lucro Líquido: R$ {Math.round(calculations.savings25Years - investment).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -57,7 +456,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-8">
             <a href="#inicio" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Início</a>
             <a href="#servicos" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Serviços</a>
-            <a href="#calculadora" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Economia</a>
+            <a href="#roi" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>ROI</a>
             <a href="#equipe" className={`text-sm font-medium transition-colors ${scrolled ? 'text-white/90 hover:text-solar-yellow' : 'text-solar-dark hover:text-solar-yellow'}`}>Equipe</a>
             <div className="flex items-center gap-3">
               <a 
@@ -67,9 +466,13 @@ export function Navbar() {
               >
                 <Phone className="w-4 h-4" /> (98) 99151-6381
               </a>
-              <button className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-solar-yellow text-solar-dark hover:bg-white' : 'bg-solar-dark text-white hover:bg-solar-blue'}`}>
+              <a 
+                href="https://wa.me/5598991516381" 
+                target="_blank"
+                className={`px-5 py-2 rounded-full text-xs font-bold transition-all flex items-center justify-center ${scrolled ? 'bg-solar-yellow text-solar-dark hover:bg-white' : 'bg-solar-dark text-white hover:bg-solar-blue'}`}
+              >
                 Orçamento Grátis
-              </button>
+              </a>
             </div>
           </div>
 
@@ -93,7 +496,7 @@ export function Navbar() {
           >
             <a href="#inicio" onClick={() => setIsOpen(false)} className="text-lg font-medium">Início</a>
             <a href="#servicos" onClick={() => setIsOpen(false)} className="text-lg font-medium">Serviços</a>
-            <a href="#calculadora" onClick={() => setIsOpen(false)} className="text-lg font-medium">Economia</a>
+            <a href="#roi" onClick={() => setIsOpen(false)} className="text-lg font-medium">ROI</a>
             <a href="#equipe" onClick={() => setIsOpen(false)} className="text-lg font-medium">Equipe</a>
             <hr className={scrolled ? "border-white/10" : "border-black/5"} />
             <a href="https://wa.me/5598991516381" className="bg-green-500 text-white w-full py-3 rounded-xl font-bold flex justify-center items-center gap-2">
@@ -136,9 +539,12 @@ export function Hero() {
               >
                 Falar com Consultor <MessageCircle className="w-5 h-5 group-hover:rotate-12 transition-transform" />
               </a>
-              <button className="glass px-10 py-5 rounded-2xl font-bold text-lg hover:bg-solar-dark hover:text-white transition-all flex items-center justify-center gap-2 group">
-                Simular Economia <TrendingUp className="w-5 h-5 group-hover:translate-y-[-2px] transition-transform" />
-              </button>
+              <a 
+                href="#roi"
+                className="glass px-10 py-5 rounded-2xl font-bold text-lg hover:bg-solar-dark hover:text-white transition-all flex items-center justify-center gap-2 group"
+              >
+                Simular ROI <TrendingUp className="w-5 h-5 group-hover:translate-y-[-2px] transition-transform" />
+              </a>
             </div>
             
             <div className="mt-16 flex items-center gap-10">
@@ -464,9 +870,13 @@ export function ProjectGallery() {
             <h2 className="text-5xl font-display font-bold mb-6">Projetos Entregues</h2>
             <p className="text-solar-gray text-xl font-light">Engenharia de precisão em todo o estado.</p>
           </div>
-          <button className="hidden md:flex items-center gap-2 text-solar-dark font-bold hover:text-solar-yellow transition-colors">
+          <a 
+            href="https://wa.me/5598991516381?text=Olá! Gostaria de ver o portfólio completo de projetos."
+            target="_blank"
+            className="hidden md:flex items-center gap-2 text-solar-dark font-bold hover:text-solar-yellow transition-colors"
+          >
             Ver Portfólio Completo <ArrowRight className="w-5 h-5" />
-          </button>
+          </a>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -677,9 +1087,29 @@ export function Calculator() {
               <p className="text-xl mb-12 font-medium opacity-80 leading-relaxed">
                 Nossos consultores realizam um estudo técnico completo do seu telhado via satélite.
               </p>
-              <form className="space-y-4">
-                <input type="text" placeholder="Seu WhatsApp" className="w-full px-6 py-5 rounded-2xl bg-white/50 border border-black/5 outline-none focus:bg-white transition-all font-bold" />
-                <button className="w-full bg-solar-dark text-white py-5 rounded-2xl font-bold text-lg hover:bg-solar-blue transition-all shadow-xl">
+              <form 
+                className="space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const whatsapp = (e.currentTarget.elements.namedItem('whatsapp') as HTMLInputElement).value;
+                  if (whatsapp.length >= 10) {
+                    window.open(`https://wa.me/5598991516381?text=Olá! Gostaria de uma análise grátis. Meu WhatsApp é: ${whatsapp}`, '_blank');
+                  } else {
+                    alert('Por favor, insira um WhatsApp válido.');
+                  }
+                }}
+              >
+                <input 
+                  name="whatsapp"
+                  type="text" 
+                  placeholder="Seu WhatsApp" 
+                  className="w-full px-6 py-5 rounded-2xl bg-white/50 border border-black/5 outline-none focus:bg-white transition-all font-bold" 
+                  required
+                />
+                <button 
+                  type="submit"
+                  className="w-full bg-solar-dark text-white py-5 rounded-2xl font-bold text-lg hover:bg-solar-blue transition-all shadow-xl"
+                >
                   Receber Estudo Grátis
                 </button>
               </form>
@@ -754,8 +1184,16 @@ export function Contact() {
     }
 
     setIsSubmitting(true);
-    // Simulate API call
+    // Simulate API call and then open WhatsApp
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const message = `Olá! Meu nome é ${formData.nome}. 
+WhatsApp: ${formData.whatsapp}
+E-mail: ${formData.email}
+Mensagem: ${formData.mensagem}`;
+    
+    window.open(`https://wa.me/5598991516381?text=${encodeURIComponent(message)}`, '_blank');
+    
     setIsSubmitting(false);
     setIsSuccess(true);
     setFormData({ nome: '', whatsapp: '', email: '', mensagem: '' });
@@ -913,7 +1351,7 @@ export function Footer() {
             <ul className="space-y-4 text-white/40 font-medium">
               <li><a href="#inicio" className="hover:text-solar-yellow transition-colors">Início</a></li>
               <li><a href="#servicos" className="hover:text-solar-yellow transition-colors">Serviços</a></li>
-              <li><a href="#calculadora" className="hover:text-solar-yellow transition-colors">Calculadora</a></li>
+              <li><a href="#roi" className="hover:text-solar-yellow transition-colors">Calculadora ROI</a></li>
               <li><a href="#equipe" className="hover:text-solar-yellow transition-colors">Nossa Equipe</a></li>
             </ul>
           </div>
